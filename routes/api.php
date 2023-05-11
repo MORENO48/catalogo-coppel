@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticuloController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CategoriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,16 +16,19 @@ use App\Http\Controllers\ArticuloController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/categoria/{id?}',[CategoriaController::class, 'get']);
+
+Route::post('/usuario',[LoginController::class, 'create']);
+Route::post('/login',[LoginController::class, 'login']);
+Route::get('/articulo/{id?}',[ArticuloController::class, 'get']);
 
 Route::post('/articulo/caracteristica',[ArticuloController::class, 'addCaracteristica']);
 Route::delete('/articulo/caracteristica/{id}',[ArticuloController::class, 'deleteCaracteristica']);
 
-Route::get('/articulo/{id?}',[ArticuloController::class, 'get']);
-Route::post('/articulo/{id}',[ArticuloController::class, 'update']);
-Route::post('/articulo',[ArticuloController::class, 'create']);
 Route::delete('/articulo/{id}',[ArticuloController::class, 'delete']);
+Route::put('/articulo/{id}',[ArticuloController::class, 'update']);
+Route::post('/articulo',[ArticuloController::class, 'create']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/categorias',[CategoriaController::class, 'get']);
 });
-

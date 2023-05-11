@@ -10,16 +10,16 @@ class Articulo {
     static function get($id = null, $filtros = []) {
         //busqueda por id
         if ($id) {
-            $datos = ArticuloModel::with(['categoria','caracteristicas'])->select('id','codigo','nombre','cat_id','status')
+            $datos = ArticuloModel::with(['categoria','caracteristicas'])->select('id','codigo','nombre','cat_id','status','created_at')
                 ->where('id',$id)
                 ->where('status',1)
-                ->first();
+                ->first();  
 
             return $datos;
         }
 
         //busqueda por filtros
-        $datos = ArticuloModel::with(['categoria','caracteristicas'])->select('id','codigo','nombre','cat_id','status')
+        $datos = ArticuloModel::with(['categoria','caracteristicas'])->select('id','codigo','nombre','cat_id','status','created_at')
             ->where('status',1);
         
         if ($filtros['codigo']) {
