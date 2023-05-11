@@ -24,7 +24,7 @@ class Caracteristica {
             ->count();
         
         if ($existe == 0) {
-            return ['estatus' => 1, 'msj' => 'Articulo no existes'];
+            return ['estatus' => 1, 'msj' => 'Articulo no existe'];
         }
 
         //crear caracteristica

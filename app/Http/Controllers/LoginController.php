@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Login;
+use Illuminate\Support\Facades\Validator;
  
 class LoginController extends Controller
 {
@@ -31,10 +32,15 @@ class LoginController extends Controller
     }
 
     public function login(Request $request) {
-        // $credentials = $request->validate([
-        //     'email' => ['required', 'email'],
-        //     'password' => ['required'],
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:80',
+            'password' => 'required|max:20'
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json(["estatus" => -1, "msj" => $errors],400);
+        }
 
         try {
             $datos = Login::login($request);
@@ -46,11 +52,21 @@ class LoginController extends Controller
 
     public function create(Request $request) {
         try {
+            $validator = Validator::make($request->all(), [
+                'nombre' => 'required|max:50',
+                'email' => 'required|email|max:80',
+                'password' => 'required|max:20'
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                return response()->json(["estatus" => -1, "msj" => $errors],400);
+            }
+
             $datos = Login::create($request);
             return response()->json($datos);
         } catch (\Throwable $err) {
             return response()->json(["estatus" => -1, "msj" => $err->getMessage(), "linea" => $err->getLine()],500);
         }
-        
     }
 }
