@@ -17,3 +17,4 @@ El back end esta implementado en api rest mientras que el front en html con java
 Comentarios contactar al autor:
 Josue Vidal
 josue_vid@hotmail.com
+.
