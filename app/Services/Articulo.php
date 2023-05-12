@@ -30,8 +30,8 @@ class Articulo {
             $datos = $datos->where('nombre','like','%'.$filtros['nombre'].'%');
         }
 
-        if ($filtros['categoria_id']) {
-            $datos = $datos->where('cat_id',$filtros['categoria_id']);
+        if ($filtros['cat_id']) {
+            $datos = $datos->where('cat_id',$filtros['cat_id']);
         }
 
         $datos = $datos->get();

@@ -49,6 +49,14 @@ class LoginController extends Controller
             return response()->json(["estatus" => -1, "msj" => $err->getMessage(), "linea" => $err->getLine()],500);
         }
     }
+    public function logout(Request $request) {
+        try {
+            $datos = Login::logout($request);
+            return response()->json($datos);
+        } catch (\Throwable $err) {
+            return response()->json(["estatus" => -1, "msj" => $err->getMessage(), "linea" => $err->getLine()],500);
+        }
+    }
 
     public function create(Request $request) {
         try {
