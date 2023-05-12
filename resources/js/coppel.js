@@ -29,7 +29,7 @@ async function obtenerCategorias() {
 
     pintarCategorias()
   } catch (error) {
-    console.log(error.message)
+    manejarError(error)
     globalData.categorias = []
     pintarCategorias()
   }
@@ -57,6 +57,7 @@ async function obtenerArticulos() {
     }
     pintarArticulos()
   } catch (error) {
+    manejarError (error)
     pintarArticulos()
   }
 }
@@ -69,7 +70,7 @@ function pintarArticulos() {
         <td><p>${value.codigo}</p></td>
         <td><p>${value.nombre}</p></td>
         <td><p>${value.categoria.nombre}</p></td>
-        <td><p>${value.created_at}</p></td>
+        <td><p>${getFecha(value.created_at)}</p></td>
         <td>
           <div class="opciones">
             <button class="btn-option option-editar-articulo" data-id="${value.id}"><i class="icon-pencil"></i></button>
@@ -456,7 +457,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   buttonCerrarSession.addEventListener('click', (event) => {
     localStorage.removeItem('token')
-    window.location="login.html";
+    window.location="login";
   })
 
 
@@ -467,6 +468,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
     buscar()
   })
 
+  // LIMPIAR
+  const buttonLimpiar = document.getElementById('btnLimpiador')
+
+  buttonLimpiar.addEventListener('click', (event) => {
+    let codigo = document.getElementById('codigoBuscar')
+    let nombre = document.getElementById('nombreBuscar')
+    let categoria = document.getElementById('categoriaBuscar')
+  
+    codigo.value = ''
+    nombre.value = ''
+    categoria.value = -1
+    
+    params.delete('codigo')
+    params.delete('codigo')
+    params.delete('cat_id')
+    obtenerArticulos()
+  })
 
   // AGREGAR ARTICULO
   const buttonAgregarArticulo = document.getElementById('agregarArticulo')
@@ -672,5 +690,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
   })
 });
 
+//AUXILIARES
+function manejarError(error) {
+  if (error.response.status == 401) {
+    window.location="login";
+  }
+  console.log(error.message)
+}
+
+function checkToken() {
+  var token = localStorage.getItem('token');
+  if (!token) {
+    window.location="login";
+  }
+}
+
+function getFecha($fecha) {
+  let x = new Date($fecha);
+  return x.toLocaleString();
+}
+
+checkToken()
 obtenerCategorias()
 obtenerArticulos()

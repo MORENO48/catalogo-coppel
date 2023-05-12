@@ -23,15 +23,15 @@
         </section>
   
         <section class="wrapper-options">
-          <div class="agregar">
-            <button id="agregarArticulo" type="button" class="btn btn-primary">
-              <span>Agregar articulo</span>
-            </button>
-          </div>
           <div class="form wrapper-filtros">
             <div class="container-filtros">
               <div class="group-control">
-                <input class="form-control" placeholder="codigo del articulo" type="text" name="codigoArticulo" id="codigoBuscar" />
+                <button id="agregarArticulo" type="button" class="btn btn-primary">
+                  <span>Agregar</span>
+                </button>
+              </div>
+              <div class="group-control">
+                <input class="form-control" placeholder="codigo" type="text" name="codigoArticulo" id="codigoBuscar" />
               </div>
               <div class="group-control">
                 <input class="form-control" placeholder="nombre del articulo" type="text" name="nombreArticulo" id="nombreBuscar" />
@@ -41,10 +41,14 @@
                   <option value="-1" disabled selected>Cargando...</option>
                 </select>
               </div>
+              <div class="group-control">
+                <button class="btn btn-cancel" type="button" id="btnBuscador">Buscar</button>
+              </div>
+              <div class="group-control">
+                <button class="btn" type="button" id="btnLimpiador">Limpiar</button>
+              </div>
             </div>
-            <div>
-              <button class="btn" type="button" id="btnBuscador">Buscar</button>
-            </div>
+
           </div>
         </section>
   

@@ -28,17 +28,31 @@
     width: 300px;
     margin-right: 15px;
   }
+  .wrapper-filtros button {
+    width: 200px;
+    margin-right: 15px;
+  }
   
   .container-filtros {
     display: flex;
   }
+
+  #btnBuscador,
+  #btnLimpiador,
+  #agregarArticulo {
+    width: 120px;
+  }
   
+  #codigoBuscar {
+    width: 150px;
+  }
+
   .wrapper-filtros button {
     width: 200px;
   }
   
   .agregar {
-    width: 300px;
+    width: 200px;
     margin-right: auto;
   }
   
@@ -277,7 +291,7 @@
   #sideBar {
     min-height: 100vh;
     background-color: #0a497b;
-    width: 200px;
+    width: 250px;
     display: flex;
     justify-content: center;
     align-items: end;
@@ -286,7 +300,7 @@
   
   #main-container {
     width: 100%;
-    padding: 0 15px;
+    padding: 0 400px 0 200px;
   }
   
   #loginError {

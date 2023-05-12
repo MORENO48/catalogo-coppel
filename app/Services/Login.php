@@ -24,7 +24,7 @@ class Login {
             return ['token' => $token];
         }
 
-        return ['estatus' => 1, 'msj' => 'Error al atutenticar'];
+        return ['estatus' => 1, 'msj' => 'Credenciales invalidas, intente de nuevo'];
     }
 
     static function create($datos) {
