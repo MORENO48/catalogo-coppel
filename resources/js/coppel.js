@@ -1,5 +1,6 @@
 const globalData = {}
 const params = new URLSearchParams()
+const baseApiUrl = 'http://localhost:8080/api'
 
 globalData.categorias = []
 globalData.articulos = []
@@ -11,15 +12,16 @@ const btnRow = Object.freeze({
   agregar: 'btnAgregarRow'
 })
 const headers = {
-  "Authorization": `Bearer ${localStorage.getItem('token')}`,
+  // "Authorization": `Bearer ${localStorage.getItem('token')}`,
   'Content-Type': "application/json",
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
 }
 
 async function obtenerCategorias() {
   try {
-    const response = await axios.get(`api/categoria`, { headers })
+    // const response = await axios.get(`api/categoria`, { headers })
+    const response = await axios.get(`${baseApiUrl}/categoria`, { headers })
 
     if (response.status === 200) {
       globalData.categorias = response.data
@@ -49,7 +51,7 @@ function pintarCategorias() {
 
 async function obtenerArticulos() {
   try {
-    const response = await axios.get(`api/articulo`, { params, headers })
+    const response = await axios.get(`${baseApiUrl}/articulo/busqueda`, { params, headers })
     if (response.status === 200 && !response.data.estatus) {
       globalData.articulos = response.data
     } else {
@@ -147,7 +149,7 @@ async function buscar() {
 
   if (codigo != "" && codigo != null) params.append('codigo', codigo)
   if (nombre != "" && nombre != null) params.append('nombre', nombre)
-  if (categoria != null && parseInt(categoria) > 0) params.append('cat_id', categoria)
+  if (categoria != null && parseInt(categoria) > 0) params.append('cat', categoria)
 
   obtenerArticulos()
 }
@@ -212,15 +214,15 @@ async function guardarArticulo() {
     const { arrayCaracteristicas } = await obtenerArryCaracteristicas("tbodyAgregarCaracteristicas", null)
 
     const data = {
-      cat_id: categoria,
+      cat: categoria,
       nombre,
       codigo,
       caracteristicas: arrayCaracteristicas
     }
 
-    const response = await axios.post(`api/articulo`, data, { headers })
+    const response = await axios.post(`${baseApiUrl}/articulo`, data, { headers })
 
-    if (response.status === 200 && !response.data.estatus) {
+    if (response.status === 200) {
       obtenerArticulos()
 
       document.querySelector('#modalExito .msg-exito').innerHTML = 'Se creo correctamente el articulo.'
@@ -229,13 +231,13 @@ async function guardarArticulo() {
       document.getElementById('modalExito').classList.add('show')
       document.getElementById("tbodyAgregarCaracteristicas").innerHTML = '';
     } else {
-      document.querySelector('#modalAgregarArticuloConfirmacion .alerta .msg').innerHTML = response.data?.msj || 'Ha ocurrido un error en el grabado.'
+      document.querySelector('#modalAgregarArticuloConfirmacion .alerta .msg').innerHTML = response.data || 'Ha ocurrido un error en el grabado.'
       document.getElementById('loadGeneral').classList.remove('show')
       document.querySelector('#modalAgregarArticuloConfirmacion .alerta').classList.add('show')
       document.getElementById('modalAgregarArticuloConfirmacion').classList.add('show')
     }
   } catch (error) {
-    document.querySelector('#modalAgregarArticuloConfirmacion .alerta .msg').innerHTML = error.data?.msj || 'Ha ocurrido un error en el grabado.'
+    document.querySelector('#modalAgregarArticuloConfirmacion .alerta .msg').innerHTML = error.response.data || 'Ha ocurrido un error en el grabado.'
     document.getElementById('loadGeneral').classList.remove('show')
     document.querySelector('#modalAgregarArticuloConfirmacion .alerta').classList.add('show')
     document.getElementById('modalAgregarArticuloConfirmacion').classList.add('show')
@@ -354,10 +356,10 @@ async function guardarCaracteristica(tdElement) {
     const data = {
       nombre: arrayCaracteristicas[0].nombre,
       valor: arrayCaracteristicas[0].valor,
-      articulo_id: globalData.idArticuloEditarActual
+      articuloid: globalData.idArticuloEditarActual
     }
 
-    const response = await axios.post(`api/articulo/caracteristica`, data, { headers })
+    const response = await axios.post(`${baseApiUrl}/articulo/caracteristica`, data, { headers })
 
     if (response.status === 200 && !response.data.estatus) {
       tdElement.innerHTML = `<div class="opciones"><button data-id="${response?.data?.id}" class="btn btn-option option-eliminar-caracteristica" id="btnEliminarRow"><i class="icon-trash"></i></button></div>`
@@ -371,7 +373,7 @@ async function guardarCaracteristica(tdElement) {
 
 async function eliminarCaracteristica(idCaracteristica) {
   try {
-    const response = await axios.delete(`api/articulo/caracteristica/${idCaracteristica}`, { headers })
+    const response = await axios.delete(`${baseApiUrl}/articulo/caracteristica/${idCaracteristica}`, { headers })
 
     if (response.status === 200 && !response?.data?.estatus) {
       obtenerArticulos()
@@ -393,11 +395,12 @@ async function editarArticulo() {
     const nombre = document.getElementById('nombreEditarArticulo').value
 
     const data = {
-      cat_id: categoria,
+      id: globalData.idArticuloEditarActual,
+      cat: categoria,
       nombre
     }
 
-    const response = await axios.put(`api/articulo/${globalData.idArticuloEditarActual}`, data, { headers })
+    const response = await axios.post(`${baseApiUrl}/articulo`, data, { headers })
 
     if (response.status === 200 && !response.data.estatus) {
       obtenerArticulos()
@@ -408,13 +411,13 @@ async function editarArticulo() {
       document.getElementById('modalExito').classList.add('show')
       document.getElementById("tbodyEditarCaracteristicas").innerHTML = '';
     } else {
-      document.querySelector('#modalEditarArticuloConfirmacion .alerta .msg').innerHTML = response.data?.msj || 'Ha ocurrido un error al intentar actualizar la póliza.'
+      document.querySelector('#modalEditarArticuloConfirmacion .alerta .msg').innerHTML = response.data?.msj || 'Ha ocurrido un error al intentar actualizar.'
       document.getElementById('loadGeneral').classList.remove('show')
       document.querySelector('#modalEditarArticuloConfirmacion .alerta').classList.add('show')
       document.getElementById('modalEditarArticuloConfirmacion').classList.add('show')
     }
   } catch (error) {
-    document.querySelector('#modalEditarArticuloConfirmacion .alerta .msg').innerHTML = error.data?.msj || 'Ha ocurrido un error al intentar actualizar la póliza.'
+    document.querySelector('#modalEditarArticuloConfirmacion .alerta .msg').innerHTML = error.data?.msj || 'Ha ocurrido un error al intentar actualizar.'
     document.getElementById('loadGeneral').classList.remove('show')
     document.querySelector('#modalEditarArticuloConfirmacion .alerta').classList.add('show')
     document.getElementById('modalEditarArticuloConfirmacion').classList.add('show')
@@ -428,7 +431,7 @@ async function eliminarArticulo() {
     document.querySelector('#modalEliminarArticuloConfirmacion .alerta').classList.remove('show')
     document.getElementById('loadGeneral').classList.add('show')
 
-    const response = await axios.delete(`api/articulo/${globalData.idArticuloEliminarActual}`, { headers })
+    const response = await axios.delete(`${baseApiUrl}/articulo/${globalData.idArticuloEliminarActual}`, { headers })
 
     if (response.status === 200 && !response.data.estatus) {
       obtenerArticulos()
@@ -438,13 +441,13 @@ async function eliminarArticulo() {
       document.getElementById('loadGeneral').classList.remove('show')
       document.getElementById('modalExito').classList.add('show')
     } else {
-      document.querySelector('#modalEliminarArticuloConfirmacion .alerta .msg').innerHTML = response.data?.msj || 'Ha ocurrido un error al intentar eliminar la póliza.'
+      document.querySelector('#modalEliminarArticuloConfirmacion .alerta .msg').innerHTML = response.data?.msj || 'Ha ocurrido un error al intentar eliminar.'
       document.getElementById('loadGeneral').classList.remove('show')
       document.querySelector('#modalEliminarArticuloConfirmacion .alerta').classList.add('show')
       document.getElementById('modalEliminarArticuloConfirmacion').classList.add('show')
     }
   } catch (error) {
-    document.querySelector('#modalEliminarArticuloConfirmacion .alerta .msg').innerHTML = error.data?.msj || 'Ha ocurrido un error al intentar eliminar la póliza.'
+    document.querySelector('#modalEliminarArticuloConfirmacion .alerta .msg').innerHTML = error.data?.msj || 'Ha ocurrido un error al intentar eliminar.'
     document.getElementById('loadGeneral').classList.remove('show')
     document.querySelector('#modalEliminarArticuloConfirmacion .alerta').classList.add('show')
     document.getElementById('modalEliminarArticuloConfirmacion').classList.add('show')
@@ -482,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     
     params.delete('codigo')
     params.delete('codigo')
-    params.delete('cat_id')
+    params.delete('cat')
     obtenerArticulos()
   })
 
